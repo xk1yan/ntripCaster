@@ -26,11 +26,18 @@ func TestCaster(t *testing.T) {
 	t.Parallel()
 	loop()
 }
+
 func TestServer(t *testing.T) {
 	// t.Skip("skip Server")
 	t.Parallel()
 	serverrun()
 	fmt.Println(time.Now().Add(time.Second * 3))
+
+}
+func TestClient(t *testing.T) {
+	// t.Skip("skip Client")
+	t.Parallel()
+	clientrun()
 
 }
 func TestSlice(t *testing.T) {

@@ -65,6 +65,7 @@ func handleConnection(conn net.Conn) {
 		node := ntripMountpointsNode{}
 		node.name = res.mountPointName
 		node.con = conn
+		node.clients = make(map[string]*ntripClientsNode)
 
 		nMsRMMutex.Lock()
 		if _, ok := ntripMountpoints[res.mountPointName]; ok {
@@ -87,9 +88,11 @@ func handleConnection(conn net.Conn) {
 			if _, okk := ntripMountpoints[res.mountPointName].clients[res.clientName]; okk {
 				ntripMountpoints[res.mountPointName].clients[res.clientName].dataCh <- nil
 				ntripMountpoints[res.mountPointName].clients[res.clientName].con.Close()
+				fmt.Println("vvvvvvvvv cover")
 
 			}
 			ntripMountpoints[res.mountPointName].clients[res.clientName] = &cNode
+			fmt.Println(res.mountPointName, ":  clients: ", ntripMountpoints[res.mountPointName].clients)
 
 		}
 		nMsRMMutex.Unlock()
@@ -124,7 +127,9 @@ func mountPointRun(mNode *ntripMountpointsNode, mountPointName string) {
 			data = data[:lenn]
 			fmt.Println("send data:", data)
 			fmt.Println(ntripMountpoints)
+			fmt.Println("clients:", mNode.clients)
 			for _, v := range mNode.clients {
+				fmt.Println("chan to client:", v)
 				if len(v.dataCh) < 1 { //只要最新数据
 					v.dataCh <- &data
 				}
@@ -135,10 +140,15 @@ func mountPointRun(mNode *ntripMountpointsNode, mountPointName string) {
 
 func clientRun(cNode *ntripClientsNode, mountPointName string) {
 	sendDone, readDone := make(chan struct{}), make(chan struct{})
+	fmt.Println("run client: ", cNode.name)
 	defer func() {
 		nMsRMMutex.Lock()
-		if ntripMountpoints[mountPointName].clients[cNode.name] != cNode { //如果没有被覆盖
-			delete(ntripMountpoints[mountPointName].clients, cNode.name)
+		if _, ok := ntripMountpoints[mountPointName]; ok {
+			fmt.Printf("111:%v,%v", ntripMountpoints[mountPointName].clients[cNode.name], cNode)
+			if ntripMountpoints[mountPointName].clients[cNode.name] != cNode { //如果没有被覆盖
+				delete(ntripMountpoints[mountPointName].clients, cNode.name)
+			}
+
 		}
 		nMsRMMutex.Unlock()
 	}()
@@ -155,6 +165,7 @@ func clientRun(cNode *ntripClientsNode, mountPointName string) {
 			}
 			_ = cNode.con.SetWriteDeadline(time.Now().Add(time.Second * 3))
 			_, err := cNode.con.Write(*data)
+			fmt.Println("sendData ot ", cNode.name)
 			if err != nil {
 				break
 			}

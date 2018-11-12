@@ -13,8 +13,8 @@ func serverrun() {
 	data := make([]byte, 1024)
 	for {
 		j = 0
-		time.Sleep(time.Second * 4)
-		fmt.Printf("connect times:%d\r\n", i)
+		time.Sleep(time.Second * 1)
+		fmt.Printf("server connect times:%d\r\n", i)
 		conn, err := net.Dial("tcp", "127.0.0.1:2101")
 		if err != nil {
 			fmt.Println(err)
