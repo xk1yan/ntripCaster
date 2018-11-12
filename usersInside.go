@@ -2,41 +2,41 @@ package main
 
 import ()
 
-type testlogin struct {
+type usersIn struct {
 	mountpointPasswdMap map[string]string
 	clientPasswdMap     map[string]string
 }
 
-func (t testlogin) mountpointLogin(mountpointName, passwd string) (res bool, err error) {
-	if t.mountpointPasswdMap[mountpointName] == passwd {
+func (users usersIn) mountpointLogin(mountpointName, passwd string) (res bool, err error) {
+	if users.mountpointPasswdMap[mountpointName] == passwd {
 		return true, nil
 	}
 	return false, nil
 }
 
-func (t testlogin) clientLogin(mountpointName, clientName, passwd string) (res bool, err error) {
-	if _, ok := t.mountpointPasswdMap[mountpointName]; ok {
-		if t.clientPasswdMap[clientName] == passwd {
+func (users usersIn) clientLogin(mountpointName, clientName, passwd string) (res bool, err error) {
+	if _, ok := users.mountpointPasswdMap[mountpointName]; ok {
+		if users.clientPasswdMap[clientName] == passwd {
 			return true, nil
 		}
 	}
 	return false, nil
 }
 
-func (t *testlogin) updateUserMap() (err error) {
+func (users *usersIn) updateUserMap() (err error) {
 
-	if t.clientPasswdMap == nil {
-		t.clientPasswdMap = make(map[string]string)
+	if users.clientPasswdMap == nil {
+		users.clientPasswdMap = make(map[string]string)
 	}
-	if t.mountpointPasswdMap == nil {
-		t.mountpointPasswdMap = make(map[string]string)
+	if users.mountpointPasswdMap == nil {
+		users.mountpointPasswdMap = make(map[string]string)
 	}
-	t.mountpointPasswdMap["mount1"] = "passwd1"
-	t.mountpointPasswdMap["yunzhihui"] = "yzhbase01"
-	t.mountpointPasswdMap["jzsk2base2"] = "123456"
+	users.mountpointPasswdMap["mount1"] = "passwd1"
+	users.mountpointPasswdMap["yunzhihui"] = "yzhbase01"
+	users.mountpointPasswdMap["jzsk2base2"] = "123456"
 
-	t.clientPasswdMap["client1"] = "passwd2"
-	t.clientPasswdMap["yzhrover03"] = "123456"
+	users.clientPasswdMap["client1"] = "passwd2"
+	users.clientPasswdMap["yzhrover03"] = "123456"
 
 	return nil
 }
