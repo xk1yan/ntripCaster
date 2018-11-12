@@ -13,7 +13,6 @@ var logger = logs.NewLogger(1000)
 func init() {
 	logger.SetLogger(logs.AdapterMultiFile, `{"filename":"logs/test.log","separate":["emergency", "alert", "critical", "error", "warning", "notice", "info", "debug"]}`)
 	logger.EnableFuncCallDepth(true)
-
 }
 
 type ntripClientsNode struct {
@@ -80,7 +79,7 @@ func handleConnection(conn net.Conn) {
 		cNode.con = conn
 		cNode.name = res.clientName
 		cNode.conTime = time.Now()
-		cNode.dataCh = make(chan *[]byte, 3) //为两种nil形式关闭通道留空间防止写通道阻塞
+		cNode.dataCh = make(chan *[]byte, 3) //为两种nil形式关闭通道留空间,防止写通道阻塞
 
 		nMsRMMutex.Lock()
 		if _, ok := ntripMountpoints[res.mountPointName]; ok {
@@ -88,11 +87,9 @@ func handleConnection(conn net.Conn) {
 			if _, okk := ntripMountpoints[res.mountPointName].clients[res.clientName]; okk {
 				ntripMountpoints[res.mountPointName].clients[res.clientName].dataCh <- nil
 				ntripMountpoints[res.mountPointName].clients[res.clientName].con.Close()
-				fmt.Println("vvvvvvvvv cover")
 
 			}
 			ntripMountpoints[res.mountPointName].clients[res.clientName] = &cNode
-			fmt.Println(res.mountPointName, ":  clients: ", ntripMountpoints[res.mountPointName].clients)
 
 		}
 		nMsRMMutex.Unlock()
@@ -113,8 +110,6 @@ func mountPointRun(mNode *ntripMountpointsNode, mountPointName string) {
 			v.dataCh <- nil // 关闭通道
 			// delete(mNode.clients, k)
 		}
-		fmt.Println("end mountPoint:", mountPointName)
-		fmt.Println(ntripMountpoints)
 
 	}()
 	for {
@@ -125,11 +120,7 @@ func mountPointRun(mNode *ntripMountpointsNode, mountPointName string) {
 			break
 		} else {
 			data = data[:lenn]
-			fmt.Println("send data:", data)
-			fmt.Println(ntripMountpoints)
-			fmt.Println("clients:", mNode.clients)
 			for _, v := range mNode.clients {
-				fmt.Println("chan to client:", v)
 				if len(v.dataCh) < 1 { //只要最新数据
 					v.dataCh <- &data
 				}
@@ -140,11 +131,9 @@ func mountPointRun(mNode *ntripMountpointsNode, mountPointName string) {
 
 func clientRun(cNode *ntripClientsNode, mountPointName string) {
 	sendDone, readDone := make(chan struct{}), make(chan struct{})
-	fmt.Println("run client: ", cNode.name)
 	defer func() {
 		nMsRMMutex.Lock()
 		if _, ok := ntripMountpoints[mountPointName]; ok {
-			fmt.Printf("111:%v,%v", ntripMountpoints[mountPointName].clients[cNode.name], cNode)
 			if ntripMountpoints[mountPointName].clients[cNode.name] != cNode { //如果没有被覆盖
 				delete(ntripMountpoints[mountPointName].clients, cNode.name)
 			}
@@ -165,11 +154,9 @@ func clientRun(cNode *ntripClientsNode, mountPointName string) {
 			}
 			_ = cNode.con.SetWriteDeadline(time.Now().Add(time.Second * 3))
 			_, err := cNode.con.Write(*data)
-			fmt.Println("sendData ot ", cNode.name)
 			if err != nil {
 				break
 			}
-
 		}
 	}()
 
@@ -193,6 +180,7 @@ func clientRun(cNode *ntripClientsNode, mountPointName string) {
 			rdata = rdata[:lenn]
 		}
 	}()
+
 	<-sendDone
 	<-readDone
 }
@@ -201,7 +189,7 @@ func loop() {
 	ln, err := net.Listen("tcp", ":2101")
 	if err != nil {
 		// handle error
-		logger.Emergency("listen Fail %s", err)
+		logger.Emergency("listen Fail: %s", err)
 	}
 	for {
 		conn, err := ln.Accept()
@@ -213,6 +201,7 @@ func loop() {
 	}
 
 }
+
 func main() {
 
 }
