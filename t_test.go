@@ -1,8 +1,10 @@
 package main
 
 import (
-	// "encoding/base64"
+	"encoding/base64"
+	// "encoding/json"
 	"fmt"
+	"strconv"
 	"sync"
 	"testing"
 	"time"
@@ -22,22 +24,22 @@ func TestVerifyLogin(t *testing.T) {
 
 }
 func TestCaster(t *testing.T) {
-	// t.Skip("skip Caster")
+	t.Skip("skip Caster")
 	t.Parallel()
 	loop()
 }
 
 func TestServer(t *testing.T) {
-	// t.Skip("skip Server")
+	t.Skip("skip Server")
 	t.Parallel()
-	serverrun()
+	// serverrun()
 	fmt.Println(time.Now().Add(time.Second * 3))
 
 }
 func TestClient(t *testing.T) {
-	// t.Skip("skip Client")
+	t.Skip("skip Client")
 	t.Parallel()
-	clientrun()
+	// clientrun("1", "2", "3")
 
 }
 func TestSlice(t *testing.T) {
@@ -96,4 +98,38 @@ func TestTimes(t *testing.T) {
 	fmt.Printf("%T,%v\r\n", a, a)
 	b := <-ch
 	fmt.Printf("%T,%v\r\n", b, b)
+}
+func TestBase64(t *testing.T) {
+	t.Skip(" ")
+	ss := "abc1231l:qqeqeqwe123"
+	// res, err := base64.StdEncoding.DecodeString(ds2s[2])
+	res := base64.StdEncoding.EncodeToString([]byte(ss))
+	fmt.Println(res)
+}
+func TestDataMaker(t *testing.T) {
+	// t.Skip(" ")
+
+	// a := createMountPointAndClient(2, 2)
+	// fmt.Println(a)
+	// data, _ := json.Marshal(a)
+	// fmt.Println(string(data))
+	// b := make(map[string][]string)
+	// json.Unmarshal(data, &b)
+	// fmt.Println(b)
+	// c := dataMaker(100)
+	// fmt.Println(string(c))
+	// fmt.Println(len(c))
+	// s := "9223384124222222299"
+	s := "9223372036854775807"
+	b, err := strconv.Atoi(s)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("%T,%d\r\n", b, b)
+	d := make(map[string]string)
+	d["12"] = "qeqweqwe"
+	for k, v := range d {
+		fmt.Println(k, v)
+	}
+	fmt.Println(len(d))
 }

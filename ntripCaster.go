@@ -9,10 +9,16 @@ import (
 )
 
 var logger = logs.NewLogger(1000)
+var ntripMountpoints = make(map[string]*ntripMountpointsNode)
 
 func init() {
 	logger.SetLogger(logs.AdapterMultiFile, `{"filename":"logs/test.log","separate":["emergency", "alert", "critical", "error", "warning", "notice", "info", "debug"]}`)
 	logger.EnableFuncCallDepth(true)
+
+	fmt.Println("init")
+	loginType = new(usersIn)
+	loginType.updateUserMap()
+	// fmt.Println(loginType)
 }
 
 type ntripClientsNode struct {
@@ -31,15 +37,7 @@ type ntripMountpointsNode struct {
 
 var loginType userIfa
 
-var ntripMountpoints = make(map[string]*ntripMountpointsNode)
 var nMsRMMutex sync.RWMutex
-
-func init() {
-	fmt.Println("init")
-	loginType = new(usersIn)
-	loginType.updateUserMap()
-	fmt.Println(ntripMountpoints)
-}
 
 func handleConnection(conn net.Conn) {
 	_ = conn.SetDeadline(time.Now().Add(time.Second * 4))
@@ -203,5 +201,6 @@ func loop() {
 }
 
 func main() {
+	loop()
 
 }
