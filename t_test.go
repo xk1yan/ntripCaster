@@ -3,7 +3,10 @@ package main
 import (
 	"encoding/base64"
 	// "encoding/json"
+	// "database/sql"
 	"fmt"
+	"github.com/Unknwon/goconfig"
+	// _ "github.com/go-sql-driver/mysql"
 	"strconv"
 	"sync"
 	"testing"
@@ -13,10 +16,88 @@ import (
 var testdataServer = "SOURCE yunzhihui yzhbase01\r\nSource-Agent: NTRIP sss\r\nSTR: bbbb\r\n"
 var testdataClient = "GET /jzsk2base2 HTTP/1.0\r\nUser-Agent: NTRIP sss\r\nAuthorization: Basic eXpocm92ZXIwMzoxMjM0NTY=\r\n"
 
+func TestPoll(t *testing.T) {
+	// t.Skip(" ")
+	d := dataPool.Get().([]byte)
+	fmt.Printf("1:  %p\r\n", d)
+	dataPool.Put(d)
+	fmt.Printf("2:  %p\r\n", d)
+
+	d1 := dataPool.Get().([]byte)
+	fmt.Printf("3:  %p\r\n", d1)
+	dataPool.Put(d1)
+
+}
+
+func TestMysql(t *testing.T) {
+	// t.Skip(" ")
+	err := mysqlInit("192.168.1.125", "3306", "root", "15801250037")
+	fmt.Println(err)
+	res := mountpointVer("DMDP_F1", "123456")
+	fmt.Println("DMDP_F1: ", res)
+	res = clientVer("car001", "654321")
+	fmt.Println("car001:", res)
+	setStatus("all", "", "")
+
+	// testmysql()
+	// db, err := sql.Open("mysql", "root:15801250037@tcp(172.16.165.129:3306)/ntrip?charset=utf8")
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	t.SkipNow()
+	// }
+	// fmt.Println("0")
+	// r, err := db.Query("insert into rover(loginname,password) values(\"wwwwww\",\"123456\")")
+	// fmt.Println(r, err)
+
+	// fmt.Println("1")
+	// rows, err := db.Query("SELECT loginname,password FROM rover")
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	t.SkipNow()
+	// }
+	// fmt.Println("2")
+	// for rows.Next() {
+	// 	var loginname string
+	// 	var password string
+	// 	rows.Scan(&loginname, &password)
+	// 	fmt.Println(loginname, password)
+	// }
+	// fmt.Println("3")
+
+}
+
+func TestConfig(t *testing.T) {
+	t.Skip(" ")
+	// var configs map[string]string
+	configs := map[string]map[string]string{}
+	// a := map[string]string{}
+	// configs["12"] = a
+	conf, err := goconfig.LoadConfigFile("ntripCaster.conf")
+	if err != nil {
+		fmt.Println(err)
+	}
+	// fmt.Println(conf)
+	for k, v := range conf.GetSectionList() {
+		fmt.Println(k, v)
+		v1, _ := conf.GetSection(v)
+		configs[v] = v1
+	}
+	fmt.Println(configs)
+	a := configs["mysql"]["sd"]
+	fmt.Println("rr:", a)
+	if a == "" {
+		fmt.Println("nill")
+	}
+	// username, err := conf.GetValue("mysql", "username")
+	// fmt.Println(username)
+
+}
+
 func TestVerifyLogin(t *testing.T) {
 	t.Skip("skip VerifyLogin")
+	var conf map[string]string
 	loginType := new(usersIn)
-	loginType.updateUserMap()
+	loginType.usersInit(conf)
 	dataServer := []byte(testdataClient) //类型转化
 	res := verifyLogin(loginType, dataServer)
 	fmt.Println("登录", res.userType, res.mountPointName, res.clientName, res.backStrIndex, backStr[res.backStrIndex])
@@ -107,7 +188,7 @@ func TestBase64(t *testing.T) {
 	fmt.Println(res)
 }
 func TestDataMaker(t *testing.T) {
-	// t.Skip(" ")
+	t.Skip(" ")
 
 	// a := createMountPointAndClient(2, 2)
 	// fmt.Println(a)

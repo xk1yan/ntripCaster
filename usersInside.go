@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"xk/ntripCaster/testDataMaker"
 )
 
@@ -26,7 +25,7 @@ func (users usersIn) clientLogin(mountpointName, clientName, passwd string) (res
 	return false, nil
 }
 
-func (users *usersIn) updateUserMap() (err error) {
+func (users *usersIn) usersInit(conf map[string]string) (err error) {
 
 	if users.clientPasswdMap == nil {
 		users.clientPasswdMap = make(map[string]string)
@@ -37,7 +36,7 @@ func (users *usersIn) updateUserMap() (err error) {
 
 	mps := testDataMaker.CreateMountPointAndClient(100, 100)
 	for k, v := range mps {
-		fmt.Println(k)
+		// fmt.Println(k)
 		users.mountpointPasswdMap[k] = "123456"
 		for _, c := range v {
 			users.clientPasswdMap[c] = "123456"

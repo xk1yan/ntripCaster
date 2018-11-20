@@ -1,0 +1,19 @@
+[ntripcaster]
+# userstype: insert or mysql
+userstype=insert
+
+# statetpye: mysql or none
+statetpye=none
+
+#ntripCaster tcp port
+port=2101
+
+[mysql]
+username=root
+password=15801250037
+host=192.168.1.125
+port=3306
+
+
+[redis]
+address=127.0.0.1:6379

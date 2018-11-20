@@ -11,12 +11,6 @@ const (
 	noType         = "no"
 )
 
-type userIfa interface {
-	mountpointLogin(mountpointName, passwd string) (res bool, err error)
-	clientLogin(mountpointName, clientName, passwd string) (res bool, err error)
-	updateUserMap() (err error)
-}
-
 var backStr = [...]string{
 	"HTTP/1.0 400 Bad Request\r\nServer: NTRIP NtripCaster\r\nContent-Type: text/html\r\nConnection: close\r\n",
 	"ICY 200 OK\r\n",
@@ -49,8 +43,8 @@ func verifyLogin(loginType userIfa, data []byte) *verifyBack {
 			back.backStrIndex = 0
 			goto exit
 		}
-		mountPoint := ds0s[1]
-		passwd := ds0s[2]
+		mountPoint := ds0s[2]
+		passwd := ds0s[1]
 		if len(ds[1]) < 14 || len(ds[2]) < 5 || ds[1][:14] != "Source-Agent: " || ds[2][:5] != "STR: " {
 			back.backStrIndex = 0
 			goto exit

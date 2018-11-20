@@ -19,7 +19,7 @@ func init() {
 func serverrun(mountPoint, passwd, agent, nSTR string) {
 	// var testdataServer = "SOURCE yunzhihui yzhbase01\r\nSource-Agent: NTRIP sss\r\nSTR: bbbb\r\n"
 	i := 0
-	loginData := fmt.Sprintf("SOURCE %s %s\r\nSource-Agent: %s\r\nSTR: %s\r\n", mountPoint, passwd, agent, nSTR)
+	loginData := fmt.Sprintf("SOURCE %s %s\r\nSource-Agent: %s\r\nSTR: %s\r\n", passwd, mountPoint, agent, nSTR)
 	data := make([]byte, 1024)
 	time.Sleep(time.Second * 1)
 	fmt.Printf("server %s connect \r\n", mountPoint)
