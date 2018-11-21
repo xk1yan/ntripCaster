@@ -46,6 +46,7 @@ func mountpointVer(name, password string) bool {
 	if err != nil {
 		return false
 	}
+	rows.Close()
 	return rows.Next()
 }
 
@@ -56,6 +57,7 @@ func clientVer(name, password string) bool {
 	if err != nil {
 		return false
 	}
+	rows.Close()
 	return rows.Next()
 }
 
