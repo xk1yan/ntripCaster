@@ -110,7 +110,7 @@ func varData(data []byte) (int, bool) {
 	return num, true
 }
 
-func main() {
+func testUserInsert() {
 	mps := testDataMaker.CreateMountPointAndClient(100, 50)
 	n := 0
 	fmt.Println(os.Args)
@@ -136,5 +136,15 @@ func main() {
 
 	}
 	time.Sleep(time.Second * 1000)
+
+}
+
+func testUserMysql() {
+	for {
+		clientrun("DMDP_F1", "car001", "654321")
+	}
+
+}
+func main() {
 
 }

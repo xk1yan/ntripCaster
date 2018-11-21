@@ -38,32 +38,58 @@ func testmysql() {
 }
 
 func mountpointVer(name, password string) bool {
+	var rows *sql.Rows
+	var err error
+	defer func() {
+		if rows != nil {
+			rows.Close()
+		}
+
+	}()
 	// rows, _ := dbs.db.Query("SELECT id FROM mountpoint where name=\"%s\" and password=\"%s\"", name, password)
 	sqls := fmt.Sprintf("SELECT id FROM mountpoint where name=\"%s\" and password=\"%s\"", name, password)
 	// fmt.Println(sqls)
 	// rows, _ := dbs.db.Query("SELECT name,password FROM mountpoint")
-	rows, err := dbs.Query(sqls)
+	rows, err = dbs.Query(sqls)
 	if err != nil {
 		return false
 	}
-	rows.Close()
 	return rows.Next()
 }
 
 func clientVer(name, password string) bool {
+	var rows *sql.Rows
+	var err error
+	defer func() {
+		if rows != nil {
+			rows.Close()
+		}
+
+	}()
 	sqls := fmt.Sprintf("SELECT id FROM rover where loginname=\"%s\" and password=\"%s\"", name, password)
 	// fmt.Println(sqls)
-	rows, err := dbs.Query(sqls)
+	rows, err = dbs.Query(sqls)
 	if err != nil {
 		return false
 	}
-	rows.Close()
 	return rows.Next()
 }
 
 func setStatus(typee, name, st string) bool {
+	var rows *sql.Rows
+	var rows1 *sql.Rows
+	var err error
 	sqls := ""
 	sqls2 := ""
+
+	defer func() {
+		if rows != nil {
+			rows.Close()
+		}
+		if rows1 != nil {
+			rows1.Close()
+		}
+	}()
 	switch typee {
 	case "rover":
 		sqls = fmt.Sprintf("update rover set status=\"%s\" where loginname=\"%s\"", st, name)
@@ -77,11 +103,12 @@ func setStatus(typee, name, st string) bool {
 
 	}
 	if typee == "all" {
-		dbs.Query(sqls2)
+		rows1, _ = dbs.Query(sqls2)
 	}
 	// fmt.Println(sqls)
-	_, err := dbs.Query(sqls)
+	rows, err = dbs.Query(sqls)
 	if err != nil {
+		fmt.Println(err)
 		return false
 	}
 	return true
