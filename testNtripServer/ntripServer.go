@@ -8,7 +8,7 @@ import (
 	"xk/ntripCaster/testDataMaker"
 )
 
-var backStr = "ICY 200 OK\r\n"
+var backStr = "OK\r\n"
 var logger = logs.NewLogger(1000)
 
 func init() {

@@ -110,7 +110,7 @@ func handleConnection(conn *net.Conn) {
 	}
 
 	dataa := data[:lenn]
-	fmt.Println(time.Now())
+	// fmt.Println(time.Now())
 	res := verifyLogin(loginType, dataa)
 	dataPool.Put(data)
 	// fmt.Println(time.Now())
@@ -269,12 +269,15 @@ func loop() {
 	defer func() {
 		stateType.setAllDown()
 	}()
+	stateType.setAllDown()
 	port := fmt.Sprintf(":%s", configs["ntripcaster"]["port"])
 	// ln, err := net.Listen("tcp", ":2101")
 	ln, err := net.Listen("tcp", port)
 	if err != nil {
 		// handle error
+		fmt.Println("listen Fail: %s", err)
 		logger.Emergency("listen Fail: %s", err)
+		return
 	}
 	for {
 		conn, err := ln.Accept()

@@ -1,20 +1,18 @@
 package main
 
-import (
-	"fmt"
-)
+import ()
 
 type statePutMysql struct {
 }
 
 func (state statePutMysql) setRoverSt(roverName, st string) {
-	fmt.Println("rover", roverName, st)
+	// fmt.Println("rover", roverName, st)
 	setStatus("rover", roverName, st)
 
 }
 
 func (state statePutMysql) setMounpointSt(mountpointName, st string) {
-	fmt.Println("mountpoint", mountpointName, st)
+	// fmt.Println("mountpoint", mountpointName, st)
 	setStatus("mountpoint", mountpointName, st)
 
 }

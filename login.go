@@ -16,6 +16,7 @@ var backStr = [...]string{
 	"ICY 200 OK\r\n",
 	"ERROR - Bad Password\r\n",
 	"HTTP/1.0 401 Unauthorized\r\n",
+	"OK\r\n",
 }
 
 type verifyBack struct {
@@ -56,7 +57,7 @@ func verifyLogin(loginType userIfa, data []byte) *verifyBack {
 			logger.Trace("verify pass tpye:%s , mountPoint:%s , Source-Agent:%s , STR:%s", mountpointType, mountPoint, sourceAgent, strs)
 			back.userType = mountpointType
 			back.mountPointName = mountPoint
-			back.backStrIndex = 1
+			back.backStrIndex = 4
 			return back
 		} else {
 			back.backStrIndex = 2
